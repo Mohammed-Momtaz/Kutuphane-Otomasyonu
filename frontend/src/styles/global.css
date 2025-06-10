@@ -1,0 +1,408 @@
+/* src/styles/global.css */
+
+/* Temel CSS Reset (Önceki Adımdan Devam) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #1a2a40; /* Koyu arka plan */
+    color: #e0e6ed; /* Açık renk metin */
+}
+
+a {
+    text-decoration: none;
+    color: #407c9b; /* Mavi link rengi */
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #28547c; /* Daha koyu mavi hover */
+}
+
+/* Koyu Mavi Tema Renk Değişkenleri */
+:root {
+    --dark-blue-bg: #1a2a40; /* Genel koyu arka plan */
+    --primary-blue: #28547c; /* Ana vurgu rengi */
+    --light-blue: #407c9b;   /* Daha açık mavi */
+    --text-light: #e0e6ed;   /* Açık renk metin */
+    --text-muted: #aab8c2;   /* Silik metin */
+    --button-primary: #007bff; /* Mavi buton */
+    --button-primary-hover: #0056b3;
+    --button-success: #28a745; /* Yeşil buton (Kayıt Ol için) */
+    --button-success-hover: #218838;
+    --header-footer-bg: #101c2c; /* Başlık/Altbilgi arka planı (daha da koyu) */
+    --border-color: #314d68; /* Sınır renkleri */
+    --header-height: 80px; /* Başlık yüksekliği */
+    --footer-height: 60px; /* Altbilgi yüksekliği */
+}
+
+/* App Ana Kapsayıcısı */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Minimum tam ekran yüksekliği */
+}
+
+/* Header Stilleri */
+.main-header {
+    background-color: var(--header-footer-bg);
+    color: var(--text-light);
+    padding: 15px 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: center; /* İçeriği merkeze hizala */
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* İçeriğin genişliğini sınırlayın */
+}
+
+.logo {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.logo:hover {
+    text-decoration: none;
+    color: var(--light-blue);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px; /* Menü öğeleri arası boşluk */
+}
+
+.nav-links li {
+    position: relative;
+    text-decoration: none;
+}
+
+.nav-item {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 8px 0;
+    transition: color 0.3s ease;
+}
+
+.nav-item:hover {
+    text-decoration: none;
+    color: var(--light-blue);
+}
+
+.nav-item.auth-btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: var(--button-primary);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.nav-item.auth-btn:hover {
+    text-decoration: none;
+    background-color: var(--button-primary-hover);
+    color: white; /* Hover'da renk beyaz kalmalı */
+}
+
+.nav-item.auth-btn.primary {
+    background-color: var(--button-success); /* Kayıt Ol için farklı renk */
+}
+
+.nav-item.auth-btn.primary:hover {
+    background-color: var(--button-success-hover);
+}
+
+/* Main Content Stilleri (Şimdilik boş kalacak, sayfa özel stilleri eklenecek) */
+.main-content {
+    flex-grow: 1; /* Ana içeriğin kullanılabilir tüm alanı kaplamasını sağlar */
+    padding: 20px 0; /* Sayfa içeriği için üst/alt boşluk */
+}
+
+/* Responsive Düzenlemeler (Header için) */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .nav-links {
+        padding: 20px;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .nav-links li {
+        width: 100%;
+        text-align: left;
+    }
+
+    .nav-item {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-item.auth-btn {
+        width: auto; /* Düğmeler kendi içeriğine göre genişlesin */
+        text-align: center;
+        padding: 10px 15px;
+        margin-top: 5px;
+    }
+}
+
+/* Footer Stilleri */
+.main-footer {
+    background-color: var(--header-footer-bg); /* Header ile aynı arka plan */
+    color: var(--text-muted); /* Daha silik metin rengi */
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); /* Üstte hafif bir gölge */
+    margin-top: auto; /* Sayfanın altına yapışmasını sağlar, flexbox ile */
+    height: var(--footer-height); /* Belirli bir yükseklik */
+    display: flex;
+    flex-direction: column; /* İçeriği dikey hizala */
+    justify-content: center; /* Dikeyde merkeze hizala */
+    align-items: center; /* Yatayda merkeze hizala */
+}
+
+.main-footer p {
+    margin-bottom: 5px; /* Paragraf altında biraz boşluk */
+    font-size: 0.9em; /* Daha küçük font boyutu */
+}
+
+.social-links a { /* Eğer sosyal medya linkleri eklerseniz */
+    color: var(--text-muted);
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--light-blue);
+}
+
+/* Responsive Düzenlemeler (Footer için) */
+@media (max-width: 768px) {
+    .main-footer {
+        padding: 15px; /* Mobil cihazlarda daha az padding */
+        height: auto; /* Yüksekliği otomatik ayarla */
+    }
+}
+
+
+/* Register/Login Sayfa Stilleri */
+.register-page, .login-page { /* Hem kayıt hem giriş sayfaları için genel stil */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height) - 40px); /* Header ve Footer'dan sonra kalan alan */
+    padding: 20px;
+    background-color: var(--dark-blue-bg); /* Genel sayfa arka planı */
+}
+
+.form-container {
+    background-color: #1c2c3e; /* Formun kendi arka planı, biraz daha açık koyu mavi */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 450px; /* Formun maksimum genişliği */
+    text-align: center;
+    color: var(--text-light);
+}
+
+.form-container h2 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    color: var(--light-blue);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    color: var(--text-muted);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: #22384a; /* Input arka planı */
+    color: var(--text-light);
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(40, 84, 124, 0.3); /* Vurgu rengiyle hafif gölge */
+}
+
+.input-error {
+    border-color: #e74c3c !important; /* Hata durumunda kırmızı çerçeve */
+}
+
+.error-text {
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--button-success); /* Kayıt ol butonu için yeşil */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background-color: var(--button-success-hover);
+    transform: translateY(-2px);
+}
+
+.form-message {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.success-message {
+    background-color: #28a74533; /* Yeşil arka plan (şeffaf) */
+    color: var(--button-success);
+}
+
+.error-message {
+    background-color: #e74c3c33; /* Kırmızı arka plan (şeffaf) */
+    color: var(--error-red); /* Hata kırmızı rengi */
+}
+
+.login-link-text {
+    margin-top: 25px;
+    font-size: 1em;
+    color: var(--text-muted);
+}
+
+.login-link {
+    color: var(--light-blue);
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.login-link:hover {
+    color: var(--primary-blue);
+    text-decoration: underline;
+}
+.forgot-password-link-text {
+    margin-top: 15px; /* Kayıt linkinden biraz daha az boşluk */
+    font-size: 0.9em;
+    color: var(--text-muted);
+}
+
+.register-link-text {
+    margin-top: 10px; /* Forgot password'dan sonra boşluk */
+    font-size: 1em;
+    color: var(--text-muted);
+}
+
+/* .login-link zaten tanımlı, onu kullanacak */
+.register-link { /* Kayıt Ol linki için farklı bir sınıf ismi veya aynı link stilini kullanabiliriz */
+    color: var(--light-blue);
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.register-link:hover {
+    color: var(--primary-blue);
+    text-decoration: underline;
+}
+
+/* Responsive Düzenlemeler (Register Formu İçin) */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 30px 20px;
+        max-width: 90%; /* Daha küçük ekranlarda daha fazla genişlik */
+    }
+
+    .form-container h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-size: 1em;
+    }
+
+    .form-group input {
+        padding: 10px 12px;
+        font-size: 0.9em;
+    }
+
+    .submit-btn {
+        padding: 12px;
+        font-size: 1.1em;
+    }
+}
+
+/* OTP Verify Sayfası Özel Stilleri */
+.otp-verify-page {
+    display: flex;
+    justify-content: center;
+    background-color: var(--dark-blue-bg);
+}
+
+.otp-verify-page .verification-info-text {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    color: var(--text-light);
+    line-height: 1.5;
+}
+
+.otp-verify-page .form-group input {
+    letter-spacing: 5px; /* OTP kodu için harfler arası boşluk */
+    text-align: center; /* Kodu ortalamak için */
+    font-weight: bold;
+    font-size: 1.2em; /* Daha büyük font */
+    padding: 15px; /* Daha fazla padding */
+}
+
+.otp-verify-page .resend-otp-text {
+    margin-top: 20px;
+    font-size: 0.95em;
+    color: var(--text-muted);
+}
