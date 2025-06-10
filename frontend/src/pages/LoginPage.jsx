@@ -80,12 +80,16 @@ const LoginPage = () => {
       if (response.ok) {
         // Giriş başarılı olduğunda Redux state'ini güncelle
         dispatch(loginSuccess({ user: data.user, token: data.token })); // Backend'den gelen user ve token'ı payload olarak gönder
+        
+        localStorage.setItem('token', data.token); // Token'ı localStorage'a kaydettiğimizden emin ol
+        localStorage.setItem('user', JSON.stringify(data.user)); // User objesini de kaydetmek iyi bir fikir
+     
         setMessage(data.message || 'Giriş başarılı!');
         // Yönlendirme useEffect içinde isAuthenticated değiştiğinde yapılacak
 
         // Başarılı girişten sonra Home sayfasına veya Dashboard'a yönlendir
         setTimeout(() => {
-          navigate('/'); // Ana sayfaya yönlendir
+          navigate('/dashboard'); // panel sayfasına yönlendir
         }, 1500); // 1.5 saniye sonra yönlendir
       } else {
         // Giriş başarısız olduğunda Redux state'ini güncelle

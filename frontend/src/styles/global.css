@@ -37,6 +37,7 @@ a:hover {
     --button-success-hover: #218838;
     --header-footer-bg: #101c2c; /* Başlık/Altbilgi arka planı (daha da koyu) */
     --border-color: #314d68; /* Sınır renkleri */
+    --error-red: #ff4545; /* Hata renkleri */
     --header-height: 80px; /* Başlık yüksekliği */
     --footer-height: 60px; /* Altbilgi yüksekliği */
 }
@@ -434,7 +435,6 @@ a:hover {
     border-radius: 10px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     width: 100%;
-    max-width: 900px; /* Panelin maksimum genişliği */
     color: var(--text-light);
     text-align: center;
 }
@@ -513,7 +513,367 @@ a:hover {
     transform: translateY(-2px);
 }
 
+/* DashboardPage Admin Bölümü Stilleri */
+.dashboard-page .admin-section-header {
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column; /* Mobil için alt alta */
+    align-items: center;
+    text-align: center;
+}
+
+.dashboard-page .admin-section-header h3 {
+    font-size: 2.5em; /* Dashboard'daki diğer h3'lerden daha büyük */
+    color: var(--light-blue);
+    margin-bottom: 20px;
+}
+
+/* Kitap Yönetimi Bölümü */
+.admin-book-management-section {
+    width: 100%;
+    max-width: 1200px; /* DashboardPage'in max-width'ine uygun */
+    margin-top: 50px; /* Diğer bölümlerden ayırmak için */
+    background-color: #1c2c3e;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.admin-book-management-section .admin-books-header {
+    width: 100%; /* Kendi içinde tam genişlik */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-book-management-section .admin-books-header h3 { /* H3 başlığını tekrar tanımladık */
+    font-size: 2em; /* Daha küçük bir başlık */
+    color: var(--light-blue);
+    margin-bottom: 0; /* Üstteki h3'ten farklı olarak */
+}
+
+.admin-book-management-section .add-new-book-btn {
+    background-color: var(--button-success);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-book-management-section .add-new-book-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.books-table-container { /* Mevcut kural */
+    width: 100%;
+    overflow-x: auto;
+    /* background-color: #1c2c3e; /* Bu kısmı yukarı taşıdık */
+    /* border-radius: 10px; /* Bu kısmı yukarı taşıdık */
+    /* box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); /* Bu kısmı yukarı taşıdık */
+    /* padding: 20px; /* Bu kısmı yukarı taşıdık */
+}
+
+.books-table { /* Mevcut kural */
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-light);
+    min-width: 800px;
+}
+
+.books-table th,
+.books-table td { /* Mevcut kural */
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.books-table th { /* Mevcut kural */
+    background-color: #2a3e51;
+    color: var(--primary-blue);
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.books-table tr:last-child td { /* Mevcut kural */
+    border-bottom: none;
+}
+
+.books-table tbody tr:hover { /* Mevcut kural */
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.book-image-cell img { /* Mevcut kural */
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 5px;
+    display: block;
+    margin: auto;
+}
+
+.book-image-cell span { /* Mevcut kural */
+    display: block;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+.status-available { /* Mevcut kural */
+    color: var(--button-success);
+    font-weight: bold;
+}
+
+.status-not-available { /* Mevcut kural */
+    color: var(--error-red);
+    font-weight: bold;
+}
+
+.action-buttons { /* Mevcut kural */
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.action-button { /* Mevcut kural */
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn { /* Mevcut kural */
+    background-color: var(--button-primary);
+    color: white;
+}
+
+.edit-btn:hover { /* Mevcut kural */
+    background-color: var(--light-blue);
+}
+
+.delete-btn { /* Mevcut kural */
+    background-color: var(--error-red);
+    color: white;
+}
+
+.delete-btn:hover { /* Mevcut kural */
+    background-color: #c82333;
+}
+
+.dashboard-page .loading-message, /* Kapsayıcı eklendi */
+.dashboard-page .error-message, /* Kapsayıcı eklendi */
+.dashboard-page .no-books-message { /* Kapsayıcı eklendi */
+    font-size: 1.5em;
+    color: var(--text-muted);
+    text-align: center;
+    width: 100%;
+    margin-top: 20px; /* Genel boşluk */
+}
+
+.dashboard-page .error-message { /* Kapsayıcı eklendi */
+    color: var(--error-red);
+    background-color: #2a3e51; /* Daha koyu bir hata kutusu */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    margin-top: 30px;
+}
+
+.dashboard-page .error-message p { /* Kapsayıcı eklendi */
+    margin-bottom: 20px;
+}
+
+/* BookFormModal Stilleri (Bunlar değişmedi, ayrı bir bileşen olarak kalıyor) */
+.modal-overlay { /* Mevcut kural */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content { /* Mevcut kural */
+    background-color: #1c2c3e;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+    color: var(--text-light);
+    position: relative;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.modal-content h3 {
+    font-size: 2.5em;
+    color: var(--light-blue);
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.modal-content .form-group {
+    margin-bottom: 20px;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    font-size: 1.05em;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="url"],
+.modal-content textarea {
+    width: calc(100% - 20px); /* Padding'i hesaba kat */
+    padding: 12px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #22384a;
+    color: var(--text-light);
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(40, 84, 124, 0.3);
+}
+
+.modal-content textarea {
+    resize: vertical; /* Yalnızca dikeyde yeniden boyutlandırma */
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end; /* Butonları sağa yasla */
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-actions .submit-btn,
+.modal-actions .cancel-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modal-actions .submit-btn {
+    background-color: var(--button-primary); /* Mavi */
+    color: white;
+}
+
+.modal-actions .submit-btn:hover {
+    background-color: var(--light-blue);
+    transform: translateY(-2px);
+}
+
+.modal-actions .cancel-btn {
+    background-color: var(--button-secondary); /* Gri/koyu mavi */
+    color: white;
+}
+
+.modal-actions .cancel-btn:hover {
+    background-color: #4a5d73;
+    transform: translateY(-2px);
+}
+
+.modal-actions .submit-btn:disabled,
+.modal-actions .cancel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Responsive Düzenlemeler (Dashboard için) */
+@media (max-width: 992px) {
+    .dashboard-page .admin-section-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .admin-book-management-section {
+        padding: 20px;
+        margin-top: 30px;
+    }
+    .admin-book-management-section .admin-books-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    .books-table th:nth-child(1), .books-table td:nth-child(1) {
+        display: none; /* Resim sütununu gizle */
+    }
+        .admin-books-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .books-table-container {
+        padding: 10px;
+    }
+
+    .books-table th, .books-table td {
+        padding: 12px 8px;
+        font-size: 0.9em;
+    }
+
+    .books-table th:nth-child(1), .books-table td:nth-child(1) {
+        display: none; /* Resim sütununu gizle */
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+    }
+
+    .modal-content h3 {
+        font-size: 2em;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .modal-actions .submit-btn,
+    .modal-actions .cancel-btn {
+        width: 100%;
+        padding: 10px 20px;
+    }
+}
+
 @media (max-width: 768px) {
     .dashboard-page {
         padding: 20px 15px;
@@ -542,6 +902,23 @@ a:hover {
         width: 100%; /* Tam genişlikte olsun */
         padding: 20px;
     }
+}
+
+@media (max-width: 576px) {
+    .admin-book-management-section {
+        padding: 15px;
+    }
+    .admin-book-management-section .admin-books-header h3 {
+        font-size: 1.8em;
+    }
+    .admin-book-management-section .add-new-book-btn {
+        padding: 8px 18px;
+        font-size: 0.9em;
+    }
+    .books-table {
+        min-width: 500px;
+    }
+    /* ... Diğer responsive modal stilleri aynı kalacak ... */
 }
 
 /* Dashboard Linkleri için Ek Stil (Opsiyonel) */
@@ -610,7 +987,7 @@ a:hover {
 
 .book-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Esnek kart düzeni */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Esnek kart düzeni */
     gap: 30px;
     width: 100%;
     max-width: 1200px;
@@ -618,15 +995,16 @@ a:hover {
 }
 
 .book-card {
-    background-color: #1c2c3e; /* Kart arka planı */
-    padding: 25px;
+    background-color: #1c2c3e;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    flex-direction: column; /* İçerik dikey olarak sıralanır */
+    justify-content: flex-start; /* İçeriği yukarıdan başla */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Çok hafif kenarlık */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden; /* Taşmayı engelle */
 }
 
 .book-card:hover {
@@ -634,26 +1012,60 @@ a:hover {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
 }
 
+.book-image-container {
+    width: 100%;
+    height: 280px; /* Sabit yükseklik belirle */
+    overflow: hidden; /* Resim taşarsa gizle */
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: #2a3e51; /* Resim yüklenene kadar arka plan rengi */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book-image {
+    width: 100%;
+    object-fit: cover; /* Resmi konteynere sığdırırken oranları koru */
+    display: block;
+}
+
+.book-info {
+    flex-grow: 1; /* Kalan alanı kapla */
+    display: flex;
+    flex-direction: column;
+}
+
 .book-title {
-    font-size: 1.8em;
+    font-size: 1.4em;
     color: var(--light-blue);
     margin-bottom: 10px;
     line-height: 1.3;
+    min-height: 2em; /* İki satır başlık için yeterli boşluk */
 }
 
 .book-author,
-.book-category {
+.book-category,
+.book-price { 
     font-size: 1.05em;
     color: var(--text-muted);
     margin-bottom: 8px;
+}
+
+.book-price {
+    font-weight: bold;
+    color: var(--primary-blue); /* Fiyatı daha belirgin yap */
+    margin-top: 10px; /* Üstten boşluk */
+    padding-top: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 .book-status {
     font-size: 1.1em;
     font-weight: bold;
     margin-top: 15px;
-    padding-top: 15px; /* Üstten biraz boşluk */
-    border-top: 1px dashed rgba(255, 255, 255, 0.1); /* Durumun üstüne ince çizgi */
+    padding-top: 15px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 .book-status .available {
@@ -677,6 +1089,37 @@ a:hover {
 
 .error-message {
     color: var(--error-red);
+}
+
+.book-card-actions {
+    margin-top: 20px; /* Bilgiler ile buton arasında boşluk */
+    padding-top: 20px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center; /* Butonu ortala */
+}
+
+.details-btn {
+    display: inline-block; /* Link olduğu için inline-block */
+    background-color: var(--primary-blue); /* Mavi buton rengi */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none; /* Alt çizgiyi kaldır */
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    width: 100%; /* Kart içinde tam genişlik */
+    max-width: 200px; /* Maksimum genişlik */
+    cursor: pointer;
+}
+
+.details-btn:hover {
+    background-color: var(--light-blue); /* Hover rengi */
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: var(--text-light);
 }
 
 /* Responsive Düzenlemeler (BooksPage için) */
@@ -707,11 +1150,267 @@ a:hover {
         gap: 20px;
     }
 
-    .book-card {
-        padding: 20px;
+    .book-image-container {
+        height: 200px; /* Mobil'de resim yüksekliği */
     }
 
     .book-title {
         font-size: 1.5em;
+    }
+
+    .book-card {
+        padding: 20px;
+    }
+
+    .details-btn {
+        padding: 10px 20px;
+        font-size: 0.95em;
+    }
+}
+
+/* BookDetailPage Stilleri */
+.book-detail-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* İçeriği yukarıdan başla */
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: 40px 20px;
+    background-color: var(--dark-blue-bg);
+    color: var(--text-light);
+}
+
+.book-detail-card {
+    background-color: #1c2c3e;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    display: flex; /* Resmi ve bilgiyi yan yana göster */
+    gap: 40px; /* Resim ve bilgi arasında boşluk */
+    width: 100%;
+    max-width: 1000px; /* Maksimum genişlik */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.detail-image-container {
+    flex-shrink: 0; /* Resmin küçülmesini engelle */
+    width: 300px; /* Sabit resim genişliği */
+    height: 450px; /* Sabit resim yüksekliği */
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: #2a3e51; /* Yüklenirken veya resim yoksa arka plan */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-book-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Resmi konteynere sığdırırken oranları koru */
+    display: block;
+}
+
+.detail-info {
+    flex-grow: 1; /* Kalan alanı kapla */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.detail-title {
+    font-size: 3.5em;
+    color: var(--light-blue);
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.detail-author,
+.detail-category,
+.detail-price {
+    font-size: 1.2em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.detail-price {
+    font-weight: bold;
+    color: var(--primary-blue);
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-status {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-status .available {
+    color: var(--button-success);
+}
+
+.detail-status .not-available {
+    color: var(--error-red);
+}
+
+.detail-description-full {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
+    font-size: 1.2em;
+    color: var(--text-light);
+}
+
+.detail-description-full h3 {
+    font-size: 1.8em;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+}
+
+.detail-description-full p {
+    font-size: 1.05em;
+    line-height: 1.6;
+    color: var(--text-light);
+}
+
+.detail-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end; /* Butonları sağa yasla */
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçsin */
+}
+
+.borrow-book-btn,
+.back-to-list-btn,
+.back-to-books-btn { /* back-to-books-btn hata sayfasında kullanılacak */
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none; /* Linkler için alt çizgiyi kaldır */
+    text-align: center;
+}
+
+.borrow-book-btn {
+    background-color: var(--button-success); /* Yeşil buton */
+    color: white;
+    border: none;
+}
+
+.borrow-book-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.back-to-list-btn,
+.back-to-books-btn {
+    background-color: var(--button-secondary); /* Gri/koyu mavi buton */
+    color: white;
+    border: none;
+}
+
+.back-to-list-btn:hover,
+.back-to-books-btn:hover {
+    background-color: #4a5d73;
+    transform: translateY(-2px);
+}
+
+.loading-message,
+.error-message,
+.no-book-found {
+    font-size: 1.8em;
+    color: var(--text-muted);
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 50px;
+    background-color: #1c2c3e;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.error-message p,
+.no-book-found p {
+    color: var(--error-red);
+    margin-bottom: 20px;
+}
+
+
+/* Responsive Düzenlemeler (BookDetailPage için) */
+@media (max-width: 992px) {
+    .book-detail-card {
+        flex-direction: column; /* Tablet ve mobil'de alt alta */
+        padding: 30px;
+        gap: 30px;
+    }
+
+    .detail-image-container {
+        width: 100%; /* Tam genişlik */
+        height: 400px;
+        margin-bottom: 20px;
+    }
+
+    .detail-info {
+        align-items: center; /* Ortala */
+        text-align: center;
+    }
+
+    .detail-title {
+        font-size: 2.5em;
+    }
+
+    .detail-author,
+    .detail-category,
+    .detail-price,
+    .detail-status {
+        font-size: 1.1em;
+    }
+
+    .detail-description-full {
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    .detail-description-full h3 {
+        font-size: 1.6em;
+    }
+
+    .detail-actions {
+        justify-content: center; /* Butonları ortala */
+    }
+}
+
+@media (max-width: 576px) {
+    .book-detail-page {
+        padding: 20px 15px;
+    }
+
+    .book-detail-card {
+        padding: 20px;
+    }
+
+    .detail-image-container {
+        height: 300px;
+    }
+
+    .detail-title {
+        font-size: 2em;
+    }
+
+    .borrow-book-btn,
+    .back-to-list-btn,
+    .back-to-books-btn {
+        width: 100%; /* Mobil'de butonlar tam genişlik */
+        max-width: unset;
+        padding: 12px 20px;
+        font-size: 1em;
     }
 }

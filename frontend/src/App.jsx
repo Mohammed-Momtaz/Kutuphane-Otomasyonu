@@ -10,6 +10,7 @@ import OTPVerifyPage from './pages/OTPVerifyPage'; // OTPVerifyPage'i import edi
 import LoginPage from './pages/LoginPage'; // LoginPage'i import ediyoruz
 import DashboardPage from './pages/DashboardPage'; // DashboardPage'i import ediyoruz
 import BooksPage from './pages/BooksPage'; //  BooksPage'i import ediyoruz
+import BookDetailPage from './pages/BookDetailPage'; // BookDetailPage'i import ediyoruz
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           {/* Şifremi unuttum sayfası için rota (henüz oluşturmadık) */}
           {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
           <Route path="/books" element={<BooksPage />} /> {/* Yeni: BooksPage rotasını ekliyoruz */}
+          <Route path="/books/:id" element={<BookDetailPage />} /> {/* Kitap detay sayfası rotası. :id dinamik bir parametredir. */}
         </Routes>
       </Layout>
     </Router>

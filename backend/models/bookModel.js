@@ -46,13 +46,6 @@ const bookSchema = new mongoose.Schema({
             message: 'Ödünç verilen miktar mevcut stoktan fazla olamaz.'
         }
     },
-    isbn: {
-        type: String,
-        required: [true, 'ISBN numarası zorunludur.'],
-        unique: true,
-        trim: true,
-        match: [/^(?:\d{9}[\dXx]|\d{13})$/, 'Geçerli bir formatı girin (örn: 9783161484100).']
-    },
     publicationYear: {
         type: Number,
         required: [true, 'Yayın yılı zorunludur.'],
@@ -61,7 +54,7 @@ const bookSchema = new mongoose.Schema({
     },
     imageUrl: {
         type: String,
-        default: 'https://via.placeholder.com/150',
+        default: 'https://myersedpress.presswarehouse.com/publishers/default_cover.png',
     },
     addedBy: {
         type: mongoose.Schema.ObjectId,

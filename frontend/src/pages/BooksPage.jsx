@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 // Kitap verilerini alacağımız için useSelector ve useDispatch'e belki ihtiyacımız olacak
 // Şimdilik sadece statik içerikle başlayacağız.
-// import { useSelector, useDispatch } from 'react-redux';
+ import { Link } from 'react-router-dom';
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]); // Kitapları tutacak state
@@ -41,7 +41,7 @@ const BooksPage = () => {
   const filteredBooks = books.filter(book => {
     const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || book.category.toLowerCase() === filterCategory.toLowerCase();
+    const matchesCategory = filterCategory === 'all' || book.genre.toLowerCase().includes(filterCategory.toLowerCase()) ;
     return matchesSearch && matchesCategory;
   });
 
@@ -79,10 +79,12 @@ const BooksPage = () => {
             onChange={(e) => setFilterCategory(e.target.value)}
           >
             <option value="all">Tüm Kategoriler</option>
-            <option value="roman">Roman</option>
-            <option value="bilim">Bilim</option>
+            <option value="bilim">Bilim Kurgu</option>
+            <option value="biyografi">Biyografi</option>
             <option value="tarih">Tarih</option>
-            <option value="cocuk">Çocuk</option>
+            <option value="distopya">Distopya</option>
+            <option value="edebiyat">Edebiyat</option>
+            <option value="gelişim">Gelişim</option>
             {/* Daha fazla kategori eklenebilir */}
           </select>
         </div>
@@ -90,18 +92,32 @@ const BooksPage = () => {
 
       <div className="book-list">
         {filteredBooks.length > 0 ? (
-          filteredBooks.map(book => (
-            <div key={book._id || book.id} className="book-card">
-              <h3 className="book-title">{book.title}</h3>
-              <p className="book-author">Yazar: {book.author}</p>
-              <p className="book-category">Kategori: {book.category}</p>
-              <p className="book-status">Durum: <span className={book.isAvailable ? 'available' : 'not-available'}>
-                {book.isAvailable ? 'Mevcut' : 'Mevcut Değil'}
-              </span></p>
-              {/* İsteğe bağlı olarak ek bilgiler veya detay butonu eklenebilir */}
-              {/* <button className="details-btn">Detaylar</button> */}
-            </div>
-          ))
+            filteredBooks.map(book => (
+              <div key={book._id || book.id} className="book-card">
+                {book.imageUrl && ( // Eğer resim URL'i varsa göster
+                  <div className="book-image-container">
+                    <img src={book.imageUrl} alt={book.title} className="book-image" />
+                  </div>
+                )} { !book.imageUrl && 
+                  <div className="book-image-container">
+                    <img src="https://myersedpress.presswarehouse.com/publishers/default_cover.png" alt={book.title} className="book-image" />
+                  </div>
+                }
+                  <h3 className="book-title">{book.title}</h3>
+                  <p className="book-author">Yazar: {book.author}</p>
+                  <p className="book-category">Kategori: {book.genre}</p>
+                  <p className="book-price">Fiyat: {book.price ? `${book.price} TL` : 'Belirtilmemiş'}</p> {/* Fiyat eklendi */}
+                <p className="book-status">Durum: <span className={book.stock - book.borrowedCount > 0 ? 'available' : 'not-available'}>
+                  {book.stock - book.borrowedCount > 0 ? 'Mevcut' : 'Mevcut Değil'}
+                </span></p>
+                {/* İsteğe bağlı olarak ek bilgiler veya detay butonu eklenebilir */}
+                <div className="book-card-actions">
+                  <Link to={`/books/${book._id || book.id}`} className="details-btn">
+                    Detaylar
+                  </Link>
+                </div>
+              </div>
+            ))
         ) : (
           <p className="no-books-message">Kitap bulunamadı veya aramanızla eşleşen sonuç yok.</p>
         )}
