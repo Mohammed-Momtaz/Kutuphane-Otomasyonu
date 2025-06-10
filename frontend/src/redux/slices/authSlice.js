@@ -59,5 +59,8 @@ const authSlice = createSlice({
 // Eylem yaratıcıları otomatik olarak oluşturulur ve export edilir
 export const { loginStart, loginSuccess, loginFailure, logout, updateUser } = authSlice.actions;
 
+// Selector: Kullanıcının rolünü kolayca almak için
+export const selectUserRole = (state) => state.auth.user?.role; // user varsa role'ünü döndür, yoksa undefined
+
 // Reducer'ı export ediyoruz
 export default authSlice.reducer;

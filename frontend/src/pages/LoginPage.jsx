@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux'; // Redux hook'larını import ettik
+import { loginStart, loginSuccess, loginFailure } from '../redux/slices/authSlice'; // authSlice'tan action'ları import ettik
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -13,16 +15,23 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation(); // OTP doğrulama sayfasından gelen mesaj için
 
+  // Redux hook'ları
+  const dispatch = useDispatch(); // Action'ları göndermek için
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth); // Auth state'ini seçmek için
+
   // OTP doğrulama sayfasından gelen başarı mesajını göster
   useEffect(() => {
     if (location.state && location.state.successMessage) {
       setMessage(location.state.successMessage);
-      // Mesajı gösterdikten sonra URL state'ini temizleyebiliriz
-      // Ancak bu, sayfayı yenilediğinde mesajın kaybolmasına neden olur.
-      // Geçici çözüm olarak, mesajı göstermeye devam edebiliriz.
-      // Eğer tek seferlik göstermek isterseniz: navigate(location.pathname, { replace: true, state: {} });
     }
   }, [location.state]); // location.state değiştiğinde tetikle
+  
+  // Kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]); // isAuthenticated veya navigate değiştiğinde kontrol et
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,6 +61,9 @@ const LoginPage = () => {
       return;
     }
 
+    // Giriş işlemi başladığında Redux state'ini güncelle
+    dispatch(loginStart());
+
     try {
       // Burası, backend'e giriş isteği göndereceğimiz yer
       // Backend API URL'ini buraya girin (örneğin: 'http://localhost:4000/api/v1/auth/login')
@@ -66,22 +78,26 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok) {
+        // Giriş başarılı olduğunda Redux state'ini güncelle
+        dispatch(loginSuccess({ user: data.user, token: data.token })); // Backend'den gelen user ve token'ı payload olarak gönder
         setMessage(data.message || 'Giriş başarılı!');
-        // TODO: Backend'den gelen token'ı (JWT) kaydet
-        // Örneğin: localStorage.setItem('token', data.token);
-        // TODO: Redux/Context API ile kullanıcı durumunu güncelle
-        // Örneğin: dispatch(loginSuccess(data.user, data.token));
+        // Yönlendirme useEffect içinde isAuthenticated değiştiğinde yapılacak
 
         // Başarılı girişten sonra Home sayfasına veya Dashboard'a yönlendir
         setTimeout(() => {
           navigate('/'); // Ana sayfaya yönlendir
         }, 1500); // 1.5 saniye sonra yönlendir
       } else {
+        // Giriş başarısız olduğunda Redux state'ini güncelle
+        dispatch(loginFailure(data.message || 'Giriş başarısız oldu. Lütfen e-posta ve şifrenizi kontrol edin.'));
         setMessage(data.message || 'Giriş sırasında bir hata oluştu.');
+
         setErrors(data.errors || {}); // Backend'den gelen hataları göster
       }
     } catch (error) {
       console.error('Giriş isteği hatası:', error);
+      // Sunucuya bağlanılamadığında Redux state'ini güncelle
+      dispatch(loginFailure('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.'));
       setMessage('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.');
     }
   };
@@ -92,7 +108,7 @@ const LoginPage = () => {
         <h2>Giriş Yap</h2>
         {message && (
           <p className={`form-message ${message.includes('hata') || message.includes('bağlanılamadı') ? 'error-message' : 'success-message'}`}>
-            {message}
+            {message || error} {/* Hata mesajını Redux state'inden de alabiliriz */}
           </p>
         )}
         <form onSubmit={handleSubmit}>
@@ -122,7 +138,9 @@ const LoginPage = () => {
             {errors.password && <p className="error-text">{errors.password}</p>}
           </div>
 
-          <button type="submit" className="submit-btn">Giriş Yap</button>
+          <button type="submit" className="submit-btn" disabled={loading}> {/* Yüklenirken butonu devre dışı bırak */}
+            {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+          </button>
         </form>
         <p className="forgot-password-link-text">
           <Link to="/forgot-password" className="login-link">Şifremi Unuttum?</Link>
