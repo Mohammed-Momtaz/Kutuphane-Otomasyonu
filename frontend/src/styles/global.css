@@ -2228,3 +2228,348 @@ a:hover {
         font-size: 0.8em;
     }
 }
+
+/* HomePage Genel Stilleri */
+.home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: 40px 20px;
+    background: linear-gradient(145deg, var(--dark-blue-bg) 0%, #101c2a 100%);
+    color: var(--text-light);
+    gap: 60px; /* Bölümler arası boşluk */
+}
+
+/* Kahraman Bölümü (Hero Section) */
+.hero-section {
+    text-align: center;
+    max-width: 900px;
+    padding: 50px 20px;
+    background-color: rgba(28, 44, 62, 0.7); /* Şeffaf arka plan */
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    margin-bottom: 40px;
+    animation: fadeInScale 1s ease-out;
+}
+
+.hero-section h1 {
+    font-size: 4.5em;
+    color: var(--primary-blue);
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.hero-section p {
+    font-size: 1.5em;
+    color: var(--text-light);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçsinler */
+}
+
+.hero-button {
+    display: inline-block;
+    padding: 15px 35px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button.primary {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.hero-button.primary:hover {
+    background-color: var(--light-blue);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-button.secondary {
+    background-color: transparent;
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+}
+
+.hero-button.secondary:hover {
+    background-color: rgba(60, 140, 250, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Öne Çıkan Kitaplar Bölümü (Featured Books) */
+.featured-books-section {
+    width: 100%;
+    max-width: 1200px;
+    text-align: center;
+    padding: 40px 0;
+    background-color: #1c2c3e;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.featured-books-section h2 {
+    font-size: 3.5em;
+    color: var(--text-highlight);
+    margin-bottom: 40px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Esnek grid */
+    gap: 30px;
+    padding: 0 30px;
+    justify-content: center;
+}
+
+.book-card {
+    background-color: #2a3e51;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    color: var(--text-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Kart içindeki öğeleri merkeze hizala */
+    padding-bottom: 15px; /* İçerik için boşluk */
+}
+
+.book-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.book-image-container {
+    width: 100%;
+    height: 280px; /* Resim için sabit yükseklik */
+    overflow: hidden;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.book-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Resmi konteynere sığdır */
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-card-image {
+    transform: scale(1.05); /* Hover'da resmi büyüt */
+}
+
+.no-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333;
+    color: #888;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.book-card-content {
+    padding: 15px 15px 0;
+    text-align: center;
+    width: 100%;
+    flex-grow: 1; /* İçeriğin kartın kalan alanını doldurmasını sağlar */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.book-card-title {
+    font-size: 1.4em;
+    color: var(--light-blue);
+    margin-bottom: 8px;
+    white-space: nowrap; /* Tek satırda kalmasını sağlar */
+    overflow: hidden; /* Taşmayı gizler */
+    text-overflow: ellipsis; /* Taşan metni ... ile gösterir */
+}
+
+.book-card-author {
+    font-size: 1em;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-card-category {
+    font-size: 0.9em;
+    color: var(--primary-blue);
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.book-card-status {
+    font-size: 1em;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-top: auto; /* En alta hizala */
+}
+
+.book-card-status.status-available {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: var(--button-success);
+}
+
+.book-card-status.status-not-available {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: var(--red-danger);
+}
+
+.no-books-found {
+    font-size: 1.6em;
+    color: var(--text-muted);
+    margin-top: 50px;
+    text-align: center;
+    background-color: rgba(42, 62, 81, 0.5);
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Animasyonlar */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 992px) {
+    .hero-section h1 {
+        font-size: 3.5em;
+    }
+
+    .hero-section p {
+        font-size: 1.3em;
+    }
+
+    .featured-books-section h2 {
+        font-size: 2.8em;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .book-card-image {
+        height: 240px;
+    }
+
+    .book-card-title {
+        font-size: 1.2em;
+    }
+
+    .book-card-author {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-page {
+        padding: 20px 10px;
+        gap: 40px;
+    }
+
+    .hero-section {
+        padding: 30px 15px;
+    }
+
+    .hero-section h1 {
+        font-size: 2.8em;
+    }
+
+    .hero-section p {
+        font-size: 1.1em;
+        margin-bottom: 30px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .hero-button {
+        width: 80%;
+        max-width: 300px;
+        padding: 12px 25px;
+        font-size: 1.1em;
+    }
+
+    .featured-books-section {
+        padding: 25px 0;
+    }
+
+    .featured-books-section h2 {
+        font-size: 2.2em;
+        margin-bottom: 30px;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 0 15px;
+    }
+
+    .book-image-container {
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 2em;
+    }
+
+    .hero-section p {
+        font-size: 1em;
+    }
+
+    .featured-books-section h2 {
+        font-size: 1.8em;
+    }
+
+    .book-grid {
+        grid-template-columns: 1fr; /* Tek sütun */
+        gap: 10px;
+    }
+
+    .book-card-image {
+        height: 280px; /* Telefonlarda daha büyük resimler */
+    }
+}
