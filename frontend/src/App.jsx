@@ -11,6 +11,10 @@ import LoginPage from './pages/LoginPage'; // LoginPage'i import ediyoruz
 import DashboardPage from './pages/DashboardPage'; // DashboardPage'i import ediyoruz
 import BooksPage from './pages/BooksPage'; //  BooksPage'i import ediyoruz
 import BookDetailPage from './pages/BookDetailPage'; // BookDetailPage'i import ediyoruz
+import AdminUsersPage from './pages/AdminUsersPage'; // AdminUsersPage'i import ediyoruz
+import AdminLoansPage from './pages/AdminLoansPage'; // AdminLoansPage'i import ediyoruz
+import MyLoansPage from './pages/MyLoansPage'; // MyLoansPage'i import ediyoruz
+import AdminBooksPage from './pages/AdminBooksPage'; // AdminBooksPage'i import ediyoruz
 
 function App() {
   return (
@@ -26,6 +30,10 @@ function App() {
           {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
           <Route path="/books" element={<BooksPage />} /> {/* Yeni: BooksPage rotasını ekliyoruz */}
           <Route path="/books/:id" element={<BookDetailPage />} /> {/* Kitap detay sayfası rotası. :id dinamik bir parametredir. */}
+          <Route path="/my-loans" element={<MyLoansPage />} /> {/* Yeni: Kullanıcının emanetleri rotası */}
+          <Route path="/admin/books" element={<AdminBooksPage />} /> {/* Kitap yönetimi rotası */}
+          <Route path="/admin/users" element={<AdminUsersPage />} /> {/* Kullanıcı yönetimi rotası */}
+          <Route path="/admin/loans" element={<AdminLoansPage />} /> {/* Emanet yönetimi rotası */}
         </Routes>
       </Layout>
     </Router>

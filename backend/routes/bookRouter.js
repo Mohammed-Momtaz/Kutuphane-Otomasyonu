@@ -9,7 +9,10 @@ import {
     returnBook,
     getMyBorrowedBooks,
     getAllBorrowings,
-    getOverdueBooks
+    getOverdueBooks,
+    borrowBookAdmin,
+    returnBookAdmin,
+    deleteLeon
 } from '../controllers/bookController.js';
 import { isAuthenticated, authorizeRoles } from '../middlewares/authMiddleware.js';
 
@@ -41,5 +44,11 @@ router.get('/admin/borrowings', isAuthenticated, authorizeRoles('admin'), getAll
 // --- Admin için Geciken Kitaplar Rotaları ---
 // Sadece adminler geciken kitapları listeleyebilir
 router.get('/admin/overdue-books', isAuthenticated, authorizeRoles('admin'), getOverdueBooks);
+
+router.post('/admin/book/borrow', isAuthenticated, authorizeRoles('admin'), borrowBookAdmin);
+
+router.post('/admin/book/return', isAuthenticated, authorizeRoles('admin'), returnBookAdmin);
+
+router.delete('/admin/borrowing/:id', isAuthenticated, authorizeRoles('admin'), deleteLeon);
 
 export default router;

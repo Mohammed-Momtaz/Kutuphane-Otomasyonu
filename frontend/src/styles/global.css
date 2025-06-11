@@ -469,7 +469,6 @@ a:hover {
     list-style: none;
     padding: 0;
     margin: 0;
-    flex: 1; /* Bölümler eşit genişlikte olsun */
     min-width: 280px; /* Minimum genişlik */
     background-color: #22384a; /* Bölüm kutusunun arka planı */
     border-radius: 8px;
@@ -918,9 +917,7 @@ a:hover {
     .books-table {
         min-width: 500px;
     }
-    /* ... Diğer responsive modal stilleri aynı kalacak ... */
 }
-
 /* Dashboard Linkleri için Ek Stil (Opsiyonel) */
 .dashboard-link.admin-link {
     background-color: var(--primary-blue); /* Admin linkleri için farklı bir renk */
@@ -1168,6 +1165,172 @@ a:hover {
     }
 }
 
+/* Dashboard İstatistik Kartları */
+.admin-stats-section {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 50px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-stats-section h3 {
+    font-size: 2.5em;
+    color: var(--primary-blue);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 250px'den küçük olmasın, sığana kadar */
+    gap: 25px;
+    justify-content: center;
+    width: 100%;
+}
+
+.stat-card {
+    background-color: #1c2c3e;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    background-color: #22384a;
+}
+
+.stat-card h4 {
+    font-size: 1.5em;
+    color: var(--light-blue);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-card p {
+    font-size: 3em;
+    font-weight: bold;
+    color: var(--text-highlight);
+    line-height: 1;
+}
+
+/* Geciken Kitaplar Bölümü */
+.admin-overdue-section {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 50px;
+    padding-bottom: 30px;
+}
+
+.admin-overdue-section h3 {
+    font-size: 2.5em;
+    color: var(--primary-blue);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.overdue-list-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #1c2c3e;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.overdue-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-light);
+    min-width: 700px; /* Minimum tablo genişliği */
+}
+
+.overdue-table th,
+.overdue-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.overdue-table th {
+    background-color: #2a3e51;
+    color: var(--primary-blue);
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.overdue-table tr:last-child td {
+    border-bottom: none;
+}
+
+.overdue-table tbody tr {
+    background-color: #1c2c3e; /* Normal satır rengi */
+}
+
+.overdue-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Özellikle geciken kitapları vurgulamak için */
+.overdue-table tbody .overdue-item {
+    background-color: rgba(255, 99, 71, 0.1); /* Hafif kırmızımsı arka plan */
+    border-left: 5px solid var(--red-danger); /* Solunda kırmızı çizgi */
+}
+
+.overdue-table tbody .overdue-item:hover {
+    background-color: rgba(255, 99, 71, 0.15);
+}
+
+.no-overdue-message {
+    font-size: 1.5em;
+    color: var(--button-success); /* Yeşil renkte iyi bir haber mesajı */
+    text-align: center;
+    width: 100%;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: rgba(40, 167, 69, 0.1);
+    border-radius: 8px;
+    border: 1px solid var(--button-success);
+}
+
+/* Responsive Düzenlemeler */
+@media (max-width: 768px) {
+    .admin-stats-section h3, .admin-overdue-section h3 {
+        font-size: 2em;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-card h4 {
+        font-size: 1.2em;
+    }
+
+    .stat-card p {
+        font-size: 2.5em;
+    }
+
+    .stats-cards {
+        grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+    }
+
+    .overdue-table {
+        min-width: unset; /* Minimum genişliği kaldır */
+    }
+
+    .overdue-table th, .overdue-table td {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+}
+
 /* BookDetailPage Stilleri */
 .book-detail-page {
     display: flex;
@@ -1412,5 +1575,656 @@ a:hover {
         max-width: unset;
         padding: 12px 20px;
         font-size: 1em;
+    }
+}
+
+/* AdminUsersPage Stilleri */
+.admin-users-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: 40px 20px;
+    background-color: var(--dark-blue-bg);
+    color: var(--text-light);
+}
+
+.admin-users-header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-users-header h2 {
+    font-size: 3em;
+    color: var(--light-blue);
+}
+
+.users-table-container {
+    width: 100%;
+    max-width: 1200px;
+    overflow-x: auto;
+    background-color: #1c2c3e;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-light);
+    min-width: 700px; /* Minimum tablo genişliği */
+}
+
+.users-table th,
+.users-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.users-table th {
+    background-color: #2a3e51;
+    color: var(--primary-blue);
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.users-table tr:last-child td {
+    border-bottom: none;
+}
+
+.users-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Kullanıcı Rolleri için Renkler */
+.user-role-user {
+    color: var(--text-muted); /* Gri/beyaz */
+    font-weight: bold;
+}
+
+.user-role-admin {
+    color: var(--button-primary); /* Mavi */
+    font-weight: bold;
+}
+
+.no-users-message {
+    font-size: 1.5em;
+    color: var(--text-muted);
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+}
+
+/* AdminUsersPage'deki action butonları (BookPage ile aynı olabilir) */
+.admin-users-page .action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.admin-users-page .action-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.admin-users-page .edit-btn {
+    background-color: var(--button-primary);
+    color: white;
+}
+
+.admin-users-page .edit-btn:hover {
+    background-color: var(--light-blue);
+}
+
+.admin-users-page .delete-btn {
+    background-color: var(--error-red);
+    color: white;
+}
+
+.admin-users-page .delete-btn:hover {
+    background-color: #c82333;
+}
+
+.admin-users-page .delete-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* UserRoleModal Stilleri (Genel modal stillerini kullanacak ama select özelinde) */
+.modal-content select {
+    width: calc(100% - 20px);
+    padding: 12px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #22384a;
+    color: var(--text-light);
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+    appearance: none; /* Varsayılan select stilini kaldırır */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23FFFFFF" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Özel ok ikonu */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+}
+
+.modal-content select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(40, 84, 124, 0.3);
+}
+
+/* Responsive Düzenlemeler (AdminUsersPage için) */
+@media (max-width: 992px) {
+    .admin-users-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .users-table-container {
+        padding: 10px;
+    }
+
+    .users-table th, .users-table td {
+        padding: 12px 8px;
+        font-size: 0.9em;
+    }
+
+    .users-table th:nth-child(1), .users-table td:nth-child(1) {
+        display: none; /* ID sütununu gizle */
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-users-page {
+        padding: 20px 10px;
+    }
+
+    .admin-users-header h2 {
+        font-size: 2.2em;
+    }
+
+    .users-table {
+        min-width: 500px;
+    }
+
+    .users-table td {
+        font-size: 0.85em;
+    }
+}
+
+/* AdminLoansPage Stilleri */
+.admin-loans-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: 40px 20px;
+    background-color: var(--dark-blue-bg);
+    color: var(--text-light);
+}
+
+.admin-loans-header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-loans-header h2 {
+    font-size: 3em;
+    color: var(--light-blue);
+}
+
+.admin-loans-header .add-new-loan-btn {
+    background-color: var(--button-success);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.admin-loans-header .add-new-loan-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.loans-table-container {
+    width: 100%;
+    max-width: 1200px;
+    overflow-x: auto;
+    background-color: #1c2c3e;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.loans-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-light);
+    min-width: 800px; /* Minimum tablo genişliği */
+}
+
+.loans-table th,
+.loans-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.loans-table th {
+    background-color: #2a3e51;
+    color: var(--primary-blue);
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.loans-table tr:last-child td {
+    border-bottom: none;
+}
+
+.loans-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Emanet Durumu Renkleri */
+.loan-status-loaned {
+    color: var(--orange-warning); /* Turuncu */
+    font-weight: bold;
+}
+
+.loan-status-returned {
+    color: var(--button-success); /* Yeşil */
+    font-weight: bold;
+}
+
+.no-loans-message {
+    font-size: 1.5em;
+    color: var(--text-muted);
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+}
+
+/* AdminLoansPage'deki action butonları */
+.admin-loans-page .action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.admin-loans-page .action-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.admin-loans-page .return-btn {
+    background-color: var(--button-primary); /* Mavi */
+    color: white;
+}
+
+.admin-loans-page .return-btn:hover {
+    background-color: var(--light-blue);
+}
+
+/* LoanFormModal için ek stil */
+.no-options-message {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Responsive Düzenlemeler (AdminLoansPage için) */
+@media (max-width: 992px) {
+    .admin-loans-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .loans-table-container {
+        padding: 10px;
+    }
+
+    .loans-table th, .loans-table td {
+        padding: 12px 8px;
+        font-size: 0.9em;
+    }
+
+    .loans-table th:nth-child(1), .loans-table td:nth-child(1) {
+        display: none; /* ID sütununu gizle */
+    }
+}
+
+@media (max-width: 576px) {
+    .admin-loans-page {
+        padding: 20px 10px;
+    }
+
+    .admin-loans-header h2 {
+        font-size: 2.2em;
+    }
+
+    .admin-loans-header .add-new-loan-btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    .loans-table {
+        min-width: 600px;
+    }
+
+    .loans-table td {
+        font-size: 0.85em;
+    }
+}
+
+/* BookDetailPage'deki Ödünç Alma Bölümü Stilleri */
+.book-detail-page .borrow-section {
+    margin-top: 40px;
+    padding: 30px;
+    background-color: #22384a; /* Slightly darker background */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.book-detail-page .borrow-section h4 {
+    color: var(--primary-blue);
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.book-detail-page .borrow-book-btn {
+    background-color: var(--button-success); /* Yeşil buton */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: auto; /* Düğmenin genişliğini otomatik yapar */
+    display: inline-block; /* Yan yana durmasını sağlar */
+    margin-top: 20px;
+}
+
+.book-detail-page .borrow-book-btn:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+.book-detail-page .borrow-book-btn:disabled {
+    background-color: #6c757d; /* Gri */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* DatePicker Input Stilleri */
+.date-picker-input {
+    width: 100%; /* Form-group içindeki genişliği */
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #22384a;
+    color: var(--text-light);
+    font-size: 1em;
+    margin-top: 8px; /* label ile arasındaki boşluk */
+    box-sizing: border-box; /* Padding dahil genişlik */
+}
+
+.date-picker-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(40, 84, 124, 0.3);
+}
+
+/* DatePicker takviminin kendisi için stiller (react-datepicker'ın kendi sınıfları) */
+.react-datepicker {
+    font-family: 'Poppins', sans-serif;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background-color: #1c2c3e; /* Arka plan */
+    color: var(--text-light);
+}
+
+.react-datepicker__header {
+    background-color: #2a3e51; /* Başlık arka planı */
+    border-bottom: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+    color: var(--light-blue); /* Ay adı ve gün adları */
+}
+
+.react-datepicker__day {
+    color: var(--text-light); /* Gün sayıları */
+}
+
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--selected {
+    background-color: var(--primary-blue); /* Seçili gün */
+    color: white;
+    border-radius: 50%; /* Yuvarlak seçim */
+}
+
+.react-datepicker__day--outside-month {
+    color: var(--text-muted); /* Ay dışındaki günler */
+}
+
+.react-datepicker__day:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.react-datepicker__navigation--previous,
+.react-datepicker__navigation--next {
+    border-color: var(--light-blue); /* Navigasyon okları */
+}
+
+.react-datepicker__navigation-icon::before {
+    border-color: var(--light-blue);
+}
+
+/* Eğer mevcut değilse veya stok yoksa mesaj */
+.book-detail-page .no-options-message {
+    color: var(--orange-warning);
+    font-size: 1em;
+    margin-top: 15px;
+}
+
+/* MyLoansPage Stilleri (AdminLoansPage'e benzer ama farklı isimlerle) */
+.my-loans-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: 40px 20px;
+    background-color: var(--dark-blue-bg);
+    color: var(--text-light);
+}
+
+.my-loans-header {
+    width: 100%;
+    max-width: 1000px; /* Daha dar bir genişlik */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.my-loans-header h2 {
+    font-size: 3em;
+    color: var(--light-blue);
+}
+
+.my-loans-table-container {
+    width: 100%;
+    max-width: 1000px; /* Daha dar bir genişlik */
+    overflow-x: auto;
+    background-color: #1c2c3e;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.my-loans-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-light);
+    min-width: 600px; /* Minimum tablo genişliği */
+}
+
+.my-loans-table th,
+.my-loans-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.my-loans-table th {
+    background-color: #2a3e51;
+    color: var(--primary-blue);
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.my-loans-table tr:last-child td {
+    border-bottom: none;
+}
+
+.my-loans-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Emanet Durumu Renkleri (AdminLoansPage ile aynı) */
+.loan-status-loaned {
+    color: var(--orange-warning); /* Turuncu */
+    font-weight: bold;
+}
+
+.loan-status-returned {
+    color: var(--button-success); /* Yeşil */
+    font-weight: bold;
+}
+
+.no-loans-message {
+    font-size: 1.5em;
+    color: var(--text-muted);
+    text-align: center;
+    width: 100%;
+    margin-top: 50px;
+}
+
+/* MyLoansPage'deki action butonları */
+.my-loans-page .action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.my-loans-page .action-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.my-loans-page .return-btn {
+    background-color: var(--button-primary); /* Mavi */
+    color: white;
+}
+
+.my-loans-page .return-btn:hover {
+    background-color: var(--light-blue);
+}
+
+.my-loans-page .returned-btn {
+    background-color: var(--text-muted); /* Mavi */
+    color: var(--border-color);
+}
+
+.my-loans-page .returned-btn:hover {
+    cursor: default;
+}
+
+/* Responsive Düzenlemeler (MyLoansPage için) */
+@media (max-width: 992px) {
+    .my-loans-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .my-loans-table-container {
+        padding: 10px;
+    }
+
+    .my-loans-table th, .my-loans-table td {
+        padding: 12px 8px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 576px) {
+    .my-loans-page {
+        padding: 20px 10px;
+    }
+
+    .my-loans-header h2 {
+        font-size: 2.2em;
+    }
+
+    .my-loans-table {
+        min-width: 500px;
+    }
+
+    .my-loans-table td {
+        font-size: 0.8em;
     }
 }

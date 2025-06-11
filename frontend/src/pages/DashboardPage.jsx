@@ -10,11 +10,18 @@ const DashboardPage = () => {
 
   const navigate = useNavigate();
 
-  const [books, setBooks] = useState([]);
-  const [loadingBooks, setLoadingBooks] = useState(true); // Kitap yükleme loading'i
-  const [booksError, setBooksError] = useState(null); // Kitap yükleme hatası
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentBook, setCurrentBook] = useState(null);
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    totalBooks: 0,
+    loanedBooks: 0,
+    availableBooks: 0, // Yeni: Mevcut kitap sayısı
+  });
+  const [overdueLoans, setOverdueLoans] = useState([]);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [statsError, setStatsError] = useState(null);
+  const [loadingOverdue, setLoadingOverdue] = useState(true);
+  const [overdueError, setOverdueError] = useState(null);
+
 
   const isAdmin = userRole === 'admin';
   // Kimlik doğrulama kontrolü
@@ -26,93 +33,94 @@ const DashboardPage = () => {
     }
     // Eğer admin ise ve kitaplar henüz yüklenmemişse veya rol değişmişse tekrar çek
     if (isAdmin) {
-      fetchBooks();
+      fetchAdminDashboardData();
+    } else {
+      // Normal kullanıcılar için farklı veriler çekilebilir veya sadece mesaj gösterilir
+      setLoadingStats(false);
+      setLoadingOverdue(false);
     }
   }, [isAuthenticated, user, navigate, isAdmin]);
   // isAuthenticated veya navigate değiştiğinde bu etkiyi tekrar çalıştır
 
-  // Kitapları API'den çekme fonksiyonu (Admin için)
-  const fetchBooks = async () => {
-    setLoadingBooks(true);
-    setBooksError(null);
+  const fetchAdminDashboardData = async () => {
+    const token = localStorage.getItem('token');
+    const headers = { 'Authorization': `Bearer ${token}` };
+
+    // İstatistikleri çekme
+    setLoadingStats(true);
+    setStatsError(null);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:4000/api/v1/books', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+        // Örnek endpoint'ler, sizin backend'inize göre değiştirebilirsiniz
+        const [usersRes, booksRes, loansRes] = await Promise.all([
+            fetch('http://localhost:4000/api/v1/auth/getallusers', { headers }),
+            fetch('http://localhost:4000/api/v1/books', { headers }),
+            fetch('http://localhost:4000/api/v1/admin/borrowings', { headers })
+        ]);
 
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-          throw new Error('Bu işlemi yapmaya yetkiniz yok. Lütfen tekrar giriş yapın.');
+        if (!usersRes.ok || !booksRes.ok || !loansRes.ok) {
+            const errorData = await Promise.allSettled([usersRes.json(), booksRes.json(), loansRes.json()]);
+            const errorMessage = errorData.map(res => res.status === 'fulfilled' ? res.value?.message : 'Bilinmeyen hata').join(', ');
+            throw new Error(`İstatistikler yüklenirken hata: ${errorMessage}`);
         }
-        throw new Error('Kitaplar yüklenirken bir hata oluştu.');
-      }
-      const data = await response.json();
-      setBooks(data.books || []);
+
+        const usersData = await usersRes.json();
+        const booksData = await booksRes.json();
+        const loansData = await loansRes.json();
+
+        const totalUsers = usersData.users?.length || 0;
+        const totalBooks = booksData.books?.length || 0;
+        const loanedBooks = loansData.borrowings?.filter(loan => loan.status === 'borrowed').length || 0;
+        const availableBooks = booksData.books?.filter(book => book.stock - book.borrowedCount > 0).length || 0; // Stokta olan kitaplar
+
+        setStats({ totalUsers, totalBooks, loanedBooks, availableBooks });
+
     } catch (err) {
-      console.error('Kitap çekme hatası (AdminBooks):', err);
-      setBooksError(err.message || 'Kitaplar yüklenirken bir sorun oluştu.');
+        console.error('İstatistik çekme hatası:', err);
+        setStatsError(err.message || 'İstatistikler yüklenirken bir sorun oluştu.');
     } finally {
-      setLoadingBooks(false);
+        setLoadingStats(false);
     }
-  };
 
-    // Yeni kitap ekleme işlemi
-  const handleAddBook = () => {
-    setCurrentBook(null); // Yeni kitap eklemek için currentBook'ı temizle
-    setIsModalOpen(true);
-  };
-
-  // Kitap düzenleme işlemi
-  const handleEditBook = (book) => {
-    setCurrentBook(book); // Düzenlenecek kitabı set et
-    setIsModalOpen(true);
-  };
-
-  // Kitap silme işlemi
-  const handleDeleteBook = async (bookId) => {
-    if (window.confirm('Bu kitabı silmek istediğinizden emin misiniz?')) {
-      try {
-        const token = localStorage.getItem('token');
-        console.log(localStorage.getItem('token'));
-        const response = await fetch(`http://localhost:4000/api/v1/book/${bookId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+    // Geciken kitapları çekme
+    setLoadingOverdue(true);
+    setOverdueError(null);
+    try {
+        // Bu endpoint'in backend'de geciken kitapları dönmesi gerekiyor
+        const response = await fetch('http://localhost:4000/api/v1/admin/overdue-books', { headers });
 
         if (!response.ok) {
-          if (response.status === 401 || response.status === 403) {
-            throw new Error('Bu işlemi yapmaya yetkiniz yok.');
-          }
-          throw new Error('Kitap silinirken bir hata oluştu.');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Geciken kitaplar yüklenirken hata.');
         }
 
-        setBooks(books.filter(book => book._id !== bookId)); // Başarılıysa listeden kaldır
-        alert('Kitap başarıyla silindi!');
-      } catch (err) {
-        console.error('Kitap silme hatası:', err);
-        setBooksError(err.message || 'Kitap silinirken bir sorun oluştu.');
-        alert(`Hata: ${err.message || 'Kitap silinemedi.'}`);
-      }
+        const data = await response.json();
+        setOverdueLoans(data.overdueBooks || []); // Backend'den gelen veriye göre ayarlayın
+    } catch (err) {
+        console.error('Geciken kitap çekme hatası:', err);
+        setOverdueError(err.message || 'Geciken kitaplar yüklenirken bir sorun oluştu.');
+    } finally {
+        setLoadingOverdue(false);
     }
   };
 
-    // Modal kapatıldığında
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setCurrentBook(null); // Modalı kapatınca currentBook'ı temizle
-  };
+  if (loadingStats && isAdmin) { // Sadece admin ise istatistikleri beklesin
+    return (
+      <div className="dashboard-page">
+        <div className="loading-message">Dashboard verileri yükleniyor...</div>
+      </div>
+    );
+  }
 
-  // Kitap ekleme/düzenleme sonrası başarılı olduğunda listeyi güncelle
-  const handleBookSaveSuccess = () => {
-    fetchBooks(); // Kitap listesini yeniden çek
-    handleCloseModal(); // Modalı kapat
-  };
-
+  if (statsError && isAdmin) {
+      return (
+          <div className="dashboard-page">
+              <div className="error-message">
+                  <p>{statsError}</p>
+                  <button onClick={fetchAdminDashboardData} className="action-button primary">Tekrar Dene</button>
+              </div>
+          </div>
+      );
+  }
   // Eğer kullanıcı henüz kimlik doğrulanmamışsa veya user objesi gelmediyse, bir yüklenme veya boş durum göster
   if (!isAuthenticated || !user) {
     return (
@@ -139,95 +147,88 @@ const DashboardPage = () => {
               <div className="admin-section-header">
                 <h3>Admin Paneli</h3>
                 <ul className="quick-access-links">
+                  <li><Link to="/admin/books" className="dashboard-link">Kitapları Yönet</Link></li>
                   <li><Link to="/admin/users" className="dashboard-link">Üyeleri Yönet</Link></li>
                   <li><Link to="/admin/loans" className="dashboard-link">Emanetleri Görüntüle</Link></li>
                   <li><Link to="/admin/settings" className="dashboard-link admin-link">Sistem Ayarları</Link></li>
                 </ul>
               </div>
 
-              {/* Kitap Yönetimi Bölümü */}
-              <div className="admin-book-management-section">
-                <div className="admin-books-header">
-                  <h3>Kitap Yönetimi</h3> {/* Başlık AdminBooksPage'den geldi */}
-                  <button onClick={handleAddBook} className="add-new-book-btn">Yeni Kitap Ekle</button>
-                </div>
-
-                {loadingBooks ? (
-                  <div className="loading-message">Kitaplar yükleniyor...</div>
-                ) : booksError ? (
-                  <div className="error-message">
-                    <p>{booksError}</p>
-                    <button onClick={fetchBooks} className="action-button primary">Tekrar Dene</button>
-                  </div>
-                ) : books.length > 0 ? (
-                  <div className="books-table-container">
-                    <table className="books-table">
-                      <thead>
-                        <tr>
-                          <th>Resim</th>
-                          <th>Başlık</th>
-                          <th>Yazar</th>
-                          <th>Kategori</th>
-                          <th>Fiyat</th>
-                          <th>Stok</th>
-                          <th>Durum</th>
-                          <th>İşlemler</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {books.map(book => (
-                          <tr key={book._id}>
-                            <td className="book-image-cell">
-                              {book.imageUrl ? (
-                                <img src={book.imageUrl} alt={book.title} />
-                              ) : (
-                                <span>Resim Yok</span>
-                              )}
-                            </td>
-                            <td>{book.title}</td>
-                            <td>{book.author}</td>
-                            <td>{book.genre}</td>
-                            <td>{book.price ? `${book.price} TL` : '-'}</td>
-                            <td>{book.stock || 0}</td>
-                            <td>
-                              <span className={book.stock - book.borrowedCount ? 'status-available' : 'status-not-available'}>
-                                {book.stock - book.borrowedCount ? 'Mevcut' : 'Mevcut Değil'}
-                              </span>
-                            </td>
-                            <td className="action-buttons">
-                              <button onClick={() => handleEditBook(book)} className="action-button edit-btn">Düzenle</button>
-                              <button onClick={() => handleDeleteBook(book._id)} className="action-button delete-btn">Sil</button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="no-books-message">Yönetilecek kitap bulunmuyor. Yeni bir kitap ekleyin.</p>
-                )}
+              <div className="admin-stats-section">
+            <h3>Sistem İstatistikleri</h3>
+            <div className="stats-cards">
+              <div className="stat-card">
+                <h4>Toplam Kullanıcılar</h4>
+                <p>{stats.totalUsers}</p>
               </div>
+              <div className="stat-card">
+                <h4>Toplam Kitaplar</h4>
+                <p>{stats.totalBooks}</p>
+              </div>
+              <div className="stat-card">
+                <h4>Ödünç Verilen Kitaplar</h4>
+                <p>{stats.loanedBooks}</p>
+              </div>
+              <div className="stat-card">
+                <h4>Mevcut Kitaplar</h4>
+                <p>{stats.availableBooks}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="admin-overdue-section">
+            <h3>Geciken Kitaplar</h3>
+            {loadingOverdue ? (
+              <p className="loading-message">Geciken kitaplar yükleniyor...</p>
+            ) : overdueError ? (
+              <div className="error-message">
+                <p>{overdueError}</p>
+                <button onClick={fetchAdminDashboardData} className="action-button primary">Tekrar Dene</button>
+              </div>
+            ) : overdueLoans.length > 0 ? (
+              <div className="overdue-list-container">
+                <table className="overdue-table">
+                  <thead>
+                    <tr>
+                      <th>Kitap Adı</th>
+                      <th>Ödünç Alan</th>
+                      <th>Emanet Tarihi</th>
+                      <th>Beklenen İade Tarihi</th>
+                      <th>Geçen Gün</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {overdueLoans.map(loan => (
+                      <tr key={loan._id} className="overdue-item">
+                        <td>{loan.book?.title || 'Kitap Bilgisi Yok'}</td>
+                        <td>{loan.user?.name || 'Kullanıcı Bilgisi Yok'}</td>
+                        <td>{new Date(loan.borrowDate).toLocaleDateString()}</td>
+                        <td>{new Date(loan.returnDate).toLocaleDateString()}</td>
+                        <td>
+                          {Math.floor((new Date() - new Date(loan.returnDate)) / (1000 * 60 * 60 * 24))} gün
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="no-overdue-message">Geciken kitap bulunmuyor. Harika!</p>
+            )}
+          </div>
             </>
           ) : (
             // Normal kullanıcılar için özel bölüm
             <>
               <h3>Kullanıcı Paneli</h3>
               <ul className="quick-access-links">
-                <li><Link to="/my-books" className="dashboard-link">Kitaplarım</Link></li>
-                <li><Link to="/borrow-history" className="dashboard-link">Ödünç Alma Geçmişi</Link></li>
+                <li><Link to="/my-loans" className="dashboard-link">Ödünç Alma Geçmişi</Link></li>
                 <li><Link to="/profile" className="dashboard-link">Profilim</Link></li>
               </ul>
             </>
           )}
         </div>
       </div>
-      {isModalOpen && (
-        <BookFormModal
-          book={currentBook}
-          onClose={handleCloseModal}
-          onSaveSuccess={handleBookSaveSuccess}
-        />
-      )}
     </div>
   );
 };

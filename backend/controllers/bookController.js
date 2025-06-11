@@ -1,6 +1,7 @@
 import { catchAsyncErrors } from "../middlewares/catchAsyncErrors.js";
 import ErrorHandler from "../middlewares/errorMiddlewares.js";
 import { Book } from "../models/bookModel.js";
+import { User } from "../models/userModel.js";
 import { Borrowing } from "../models/borrowingModel.js";
 
 // --- Yeni Kitap Ekleme (Admin Yetkisi Gerekir) ---
@@ -280,5 +281,134 @@ export const getOverdueBooks = catchAsyncErrors(async (req, res, next) => {
         message: "Gecikmiş kitaplar başarıyla listelendi.",
         overdueBooks: overdueBorrowings,
         count: overdueBorrowings.length,
+    });
+});
+
+export const borrowBookAdmin = catchAsyncErrors(async (req, res, next) => {
+    console.log("Request Body:", req.body);
+    const { bookId, returnDate, userId } = req.body; // `returnDate` (teslim tarihi), istemciden gelmeli
+
+    if (!bookId || !returnDate || !userId) {
+        return next(new ErrorHandler('Bütün alanlar zorunludur', 400));
+    }
+
+    const book = await Book.findById(bookId);
+    const user = await User.findById(userId);
+
+    if (!book) {
+        return next(new ErrorHandler('Ödünç alınacak kitap bulunamadı!', 404));
+    }
+    if (!user) {
+        return next(new ErrorHandler('Kullanıcı bulunamadı!', 404));
+    }
+
+    // Yeterli stok var mı kontrol et
+    if (book.stock - book.borrowedCount <= 0) {
+        return next(new ErrorHandler('Bu kitabın mevcut kopyası kalmadı. Lütfen daha sonra tekrar deneyin.', 400));
+    }
+
+    // `returnDate`'in geçerli bir tarih olduğundan ve geçmişte olmadığından emin ol
+    const parsedReturnDate = new Date(returnDate);
+    if (isNaN(parsedReturnDate.getTime())) { // Geçersiz tarih formatı
+        return next(new ErrorHandler('Geçerli bir teslim tarihi formatı girin (örn: YYYY-MM-DD).', 400));
+    }
+    if (parsedReturnDate <= Date.now()) { // Teslim tarihi geçmişte veya şu an olamaz
+        return next(new ErrorHandler('Teslim tarihi gelecekte olmalı.', 400));
+    }
+
+    // Kullanıcının bu kitabı zaten ödünç alıp almadığını kontrol et
+    // (Aynı kitaptan birden fazla kopya ödünç almasına izin vermek istemiyorsanız)
+    const existingBorrowing = await Borrowing.findOne({
+        user: userId,
+        book: bookId,
+        status: 'borrowed' // Henüz iade edilmemiş
+    });
+
+    if (existingBorrowing) {
+        return next(new ErrorHandler('Bu kitabı zaten ödünç almışsınız. Lütfen önce mevcut kopyayı iade edin.', 400));
+    }
+
+    // Yeni ödünç alma kaydını oluştur
+    const borrowing = await Borrowing.create({
+        book: bookId,
+        user: userId,
+        returnDate: parsedReturnDate,
+        status: 'borrowed'
+    });
+
+    // Kitabın ödünç sayısını artır
+    book.borrowedCount += 1;
+    await book.save({ validateBeforeSave: false }); // `borrowedCount` validatörü burada devreye girmediği için false.
+    // Eğer `book.stock`tan fazlasını ödünç almaya çalışırsan,
+    // yukarıdaki `if (book.stock - book.borrowedCount <= 0)` kontrolü bunu yakalar.
+
+    res.status(200).json({
+        success: true,
+        message: 'Kitap başarıyla ödünç alındı!',
+        borrowing,
+        availableStock: book.stock - book.borrowedCount, // Kalan stok bilgisini de ver
+    });
+});
+
+export const returnBookAdmin = catchAsyncErrors(async (req, res, next) => {
+    // İade edilecek ödünç alma kaydının ID'si
+    const { borrowingId } = req.body;
+
+    if (!borrowingId) {
+        return next(new ErrorHandler('İade edilecek ödünç alma kaydının ID\'si zorunludur.', 400));
+    }
+
+    // Ödünç alma kaydını bul. Kullanıcının sadece kendi ödünç aldığı kitabı iade edebilmesi için `user` filtresi ekle.
+    // Adminler için bu filtreyi kaldırabilir veya ayrı bir rota yapabilirsin.
+    const borrowing = await Borrowing.findOne({
+        _id: borrowingId,
+        status: 'borrowed' // Sadece 'borrowed' durumundaki kayıtlar iade edilebilir
+    }).populate('book'); // Kitap bilgilerini de çek (stok güncellemesi ve ceza için)
+
+    if (!borrowing) {
+        return next(new ErrorHandler('Geçerli bir ödünç alma kaydı bulunamadı veya zaten iade edilmiş.', 404));
+    }
+
+    const book = borrowing.book;
+
+    if (!book) { // Kitap veritabanından silinmiş olabilir
+        return next(new ErrorHandler('İlgili kitap bulunamadı. Lütfen yöneticiyle iletişime geçin.', 404));
+    }
+
+    // Ödünç alma statüsünü 'returned' olarak güncelle
+    borrowing.status = 'returned';
+    borrowing.actualReturnDate = Date.now(); // Fiili iade tarihini kaydet
+
+    // Geç iade durumu kontrolü 
+    if (borrowing.actualReturnDate > borrowing.returnDate) {
+        borrowing.status = 'overdue'; 
+    }
+
+    await borrowing.save();
+
+    // Kitabın ödünç sayısını azalt
+    book.borrowedCount -= 1;
+    await book.save({ validateBeforeSave: false }); // Validator'ü burada atla
+
+    res.status(200).json({
+        success: true,
+        message: 'Kitap başarıyla iade edildi!',
+        borrowing,
+        availableStock: book.stock - book.borrowedCount,
+    });
+});
+
+export const deleteLeon = catchAsyncErrors(async (req, res, next) => {
+    const borrowing = await Borrowing.findById(req.params.id);
+
+    if (!borrowing) {
+        return next(new ErrorHandler('Silinecek ödünç işlemi bulunamadı', 404));
+    }
+
+    await borrowing.deleteOne();
+
+    res.status(200).json({
+        success: true,
+        message: 'Ödünç işlemi başarıyla silindi!',
     });
 });

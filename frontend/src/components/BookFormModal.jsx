@@ -29,6 +29,7 @@ const BookFormModal = ({ book, onClose, onSaveSuccess }) => {
         stock: book.stock || 0,
         imageUrl: book.imageUrl || '',
         publicationYear: book.publicationYear || '',
+        addedBy: book.addedBy || ''
       });
     } else {
       // Yeni kitap ekleniyorsa, formu varsayılan değerlerle başlat
@@ -41,6 +42,7 @@ const BookFormModal = ({ book, onClose, onSaveSuccess }) => {
         stock: '',
         imageUrl: '',
         publicationYear: '',
+        addedBy: '',
       });
     }
   }, [book]); // book prop'u değiştiğinde formu güncelle

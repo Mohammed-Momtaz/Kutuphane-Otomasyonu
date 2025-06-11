@@ -152,3 +152,45 @@ export const getUser = catchAsyncErrors(async (req, res, next) => {
         user,
     });
 });
+
+//getAllUsers Fonksiyonu 
+export const getAllUsers = catchAsyncErrors(async (req, res, next) => {
+    const users = await User.find().populate('name'); 
+
+    res.status(200).json({
+        success: true,
+        users,
+        count: users.length,
+    });
+});
+
+//DeleteUser Fonksiyonu 
+export const deleteUser = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+        return next(new ErrorHandler('Silinecek Kullanıcı bulunamadı!', 404));
+    }
+
+    await user.deleteOne();
+
+    res.status(200).json({
+        success: true,
+        message: 'Kullanıcı başarıyla silindi!',
+    });
+});
+
+export const updateUser = catchAsyncErrors(async (req, res, next) => {
+    let user = await User.findById(req.params.id);
+    if (!user) {
+        return next(new ErrorHandler('Güncellenecek kitap bulunamadı!', 404));
+    }
+    const { role } = req.body;
+    user.role = role
+    await user.save(); // Güncellenen kitabı kaydet
+    res.status(200).json({
+        success: true,
+        message: 'Kullanıcı başarıyla güncellendi!',
+        user,
+    });
+});

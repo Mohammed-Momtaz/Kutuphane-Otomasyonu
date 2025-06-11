@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useParams ile URL'den ID alacağız
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import DatePicker from 'react-datepicker'; // DatePicker import edildi
+import 'react-datepicker/dist/react-datepicker.css'; // DatePicker stilleri
 
 const BookDetailPage = () => {
   const { id } = useParams(); // URL'den kitap ID'sini alıyoruz (örneğin: /books/60d21b46a1e34c2a8c8b4567)
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const [book, setBook] = useState(null); // Tekil kitap verisini tutacak state
   const [loading, setLoading] = useState(true); // Yüklenme durumu
   const [error, setError] = useState(null); // Hata durumu
+  const [borrowMessage, setBorrowMessage] = useState(''); // Ödünç alma mesajı
+  const [borrowError, setBorrowError] = useState(null); // Ödünç alma hatası
+  const [returnDate, setReturnDate] = useState(null); // İade tarihi için state
+
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -43,6 +51,62 @@ const BookDetailPage = () => {
     }
   }, [id]); // ID değiştiğinde bu etkiyi tekrar çalıştır
 
+    // Kitap ödünç alma fonksiyonu
+  const handleBorrowBook = async () => {
+    setBorrowMessage('');
+    setBorrowError(null);
+
+    if (!isAuthenticated) {
+      setBorrowError('Kitap ödünç almak için giriş yapmalısınız.');
+      navigate('/login', { state: { from: `/books/${id}` } }); // Giriş sayfasına yönlendir
+      return;
+    }
+
+    if (user?.role === 'admin') {
+        setBorrowError('Adminler doğrudan bu arayüzden kitap ödünç alamaz. Lütfen admin panelinden emanet oluşturun.');
+        return;
+    }
+
+    if (!returnDate) {
+      setBorrowError('Lütfen bir iade tarihi seçin.');
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    const borrowUrl = 'http://localhost:4000/api/v1/book/borrow';
+
+    try {
+      const response = await fetch(borrowUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          bookId: book._id,
+          returnDate: returnDate.toISOString().split('T')[0], // YYYY-MM-DD formatında gönder
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Kitap ödünç alınırken bir hata oluştu.');
+      }
+
+      setBorrowMessage('Kitap başarıyla ödünç alındı!');
+      // Stoğu ve mevcut durumunu güncelleyebiliriz (opsiyonel)
+      setBook(prevBook => ({
+        ...prevBook,
+        borrowedCount: prevBook.borrowedCount - 1 > 0
+      }));
+
+    } catch (err) {
+      console.error('Ödünç alma hatası:', err);
+      setBorrowError(err.message || 'Kitap ödünç alınırken bir sorun oluştu.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="book-detail-page">
@@ -74,6 +138,10 @@ const BookDetailPage = () => {
     );
   }
 
+  // Minimum iade tarihi bugün veya yarından itibaren olmalı
+  const minReturnDate = new Date();
+  minReturnDate.setDate(minReturnDate.getDate() + 1); // Yarından itibaren
+
   return (
     <div className="book-detail-page">
       <div className="book-detail-card">
@@ -99,13 +167,39 @@ const BookDetailPage = () => {
             <p>{book.description}</p>
           </div>
 
-          <div className="detail-actions">
-            {/* Emanet al butonu (isteğe bağlı, admin/kullanıcı rolüne göre değişebilir) */}
-            {book.isAvailable && (
-                <button className="borrow-book-btn">Emanet Al</button>
-            )}
-            <button onClick={() => navigate('/books')} className="back-to-list-btn">Kitap Listesine Dön</button>
-          </div>
+          {/* Ödünç Alma Bölümü */}
+          {isAuthenticated && user?.role === 'user' && ( // Sadece normal kullanıcılar için göster
+            <div className="borrow-section">
+              <h4>Kitabı Ödünç Al</h4>
+              {borrowError && <p className="form-message error-message">{borrowError}</p>}
+              {borrowMessage && <p className="form-message success-message">{borrowMessage}</p>}
+
+              { book.stock - book.borrowedCount > 0 ? (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="returnDate">İade Tarihi:</label>
+                    <DatePicker
+                      selected={returnDate}
+                      onChange={(date) => setReturnDate(date)}
+                      minDate={minReturnDate} // Yarından itibaren seçim
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="İade tarihi seçin"
+                      className="date-picker-input" // CSS sınıfı
+                    />
+                  </div>
+                  <button
+                    onClick={handleBorrowBook}
+                    className="borrow-book-btn"
+                    disabled={!returnDate || borrowMessage !== ''} // Tarih seçilmeden veya ödünç alma başarılıysa disabled
+                  >
+                    Kitabı Ödünç Al
+                  </button>
+                </>
+              ) : (
+                <p className="no-options-message">Bu kitap şu anda ödünç alınamaz (stokta yok veya mevcut değil).</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
